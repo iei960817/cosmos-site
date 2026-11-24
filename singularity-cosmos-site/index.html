@@ -1,0 +1,1090 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SINGULARITY // 奇点星域</title>
+  <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+  <style>
+    :root {
+      --bg-void: #04060e;
+      --glass-bg: rgba(11, 16, 33, 0.62);
+      --glass-border: rgba(148, 180, 255, 0.18);
+      --text-primary: #f4f7ff;
+      --text-secondary: #9aa8c7;
+      --accent-cyan: #6ee7ff;
+      --accent-purple: #a78bfa;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html, body {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background: #ffffff;
+      font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Segoe UI", Roboto, sans-serif;
+      color: var(--text-primary);
+      user-select: none;
+    }
+
+    /* ================= 1. PURE WHITE INTRO OVERLAY ================= */
+    #intro-screen {
+      position: fixed;
+      inset: 0;
+      z-index: 1000;
+      background: #ffffff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      transition: opacity 0.9s cubic-bezier(0.22, 1, 0.36, 1), visibility 0.9s;
+    }
+
+    #intro-screen.revealed {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+
+    .singularity-wrapper {
+      position: relative;
+      width: 120px;
+      height: 120px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+    }
+
+    .singularity-dot {
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: #0a0a0c;
+      box-shadow: 0 0 0 0 rgba(10, 10, 12, 0.35);
+      animation: pulseDot 2.4s infinite ease-in-out;
+      transition: transform 0.85s cubic-bezier(0.7, 0, 0.2, 1);
+      z-index: 2;
+    }
+
+    .singularity-wrapper:hover .singularity-dot {
+      transform: scale(1.45);
+    }
+
+    .singularity-wrapper.expanding .singularity-dot {
+      transform: scale(260);
+    }
+
+    .singularity-ring {
+      position: absolute;
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      border: 1px solid rgba(0, 0, 0, 0.14);
+      animation: pulseRing 2.4s infinite ease-out;
+      pointer-events: none;
+    }
+
+    .intro-hint {
+      margin-top: 22px;
+      font-size: 12px;
+      letter-spacing: 0.28em;
+      color: rgba(0, 0, 0, 0.36);
+      transition: opacity 0.4s ease;
+    }
+
+    .singularity-wrapper:hover + .intro-hint {
+      color: rgba(0, 0, 0, 0.72);
+    }
+
+    @keyframes pulseDot {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.18); }
+    }
+
+    @keyframes pulseRing {
+      0% { transform: scale(0.6); opacity: 0.7; }
+      100% { transform: scale(2.1); opacity: 0; }
+    }
+
+    /* ================= 2. INTERACTIVE COSMOS CANVAS ================= */
+    #cosmos-canvas {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(circle at 50% 45%, #0c142c 0%, #050814 55%, #020308 100%);
+      z-index: 1;
+      display: block;
+    }
+
+    /* ================= 3. TOP BAR & NAVIGATION ================= */
+    header.top-nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 50;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 24px 40px;
+      opacity: 0;
+      transform: translateY(-14px);
+      transition: opacity 1s ease 0.35s, transform 1s ease 0.35s;
+      pointer-events: none;
+    }
+
+    body.universe-active header.top-nav {
+      opacity: 1;
+      transform: translateY(0);
+      pointer-events: auto;
+    }
+
+    .brand-logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 15px;
+      font-weight: 600;
+      letter-spacing: 0.14em;
+      color: var(--text-primary);
+      cursor: pointer;
+    }
+
+    .brand-orb {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--accent-cyan);
+      box-shadow: 0 0 12px var(--accent-cyan);
+    }
+
+    nav.nav-pills {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px;
+      border-radius: 999px;
+      background: rgba(12, 18, 38, 0.58);
+      border: 1px solid var(--glass-border);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+    }
+
+    .nav-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-secondary);
+      font-size: 14px;
+      padding: 8px 18px;
+      border-radius: 999px;
+      cursor: pointer;
+      transition: all 0.28s ease;
+      letter-spacing: 0.04em;
+    }
+
+    .nav-btn:hover {
+      color: #ffffff;
+      background: rgba(255, 255, 255, 0.07);
+    }
+
+    .nav-btn.active {
+      color: #050814;
+      background: #f4f7ff;
+      font-weight: 600;
+      box-shadow: 0 0 18px rgba(244, 247, 255, 0.35);
+    }
+
+    /* ================= 4. MAIN PAGE CONTAINERS ================= */
+    main#viewport {
+      position: relative;
+      z-index: 20;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 1s ease 0.45s;
+    }
+
+    body.universe-active main#viewport {
+      opacity: 1;
+    }
+
+    .page-section {
+      position: absolute;
+      inset: 0;
+      padding: 104px 40px 48px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(18px) scale(0.985);
+      transition: opacity 0.45s ease, transform 0.45s cubic-bezier(0.22, 1, 0.36, 1), visibility 0.45s;
+      overflow-y: auto;
+    }
+
+    .page-section.active {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0) scale(1);
+    }
+
+    /* Home Hero Overlay */
+    #page-home {
+      pointer-events: none;
+      text-align: center;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 16px;
+      border-radius: 999px;
+      background: rgba(110, 231, 255, 0.08);
+      border: 1px solid rgba(110, 231, 255, 0.25);
+      color: var(--accent-cyan);
+      font-size: 12px;
+      letter-spacing: 0.16em;
+      margin-bottom: 20px;
+      backdrop-filter: blur(8px);
+    }
+
+    .hero-title {
+      font-size: clamp(32px, 5.2vw, 64px);
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      line-height: 1.2;
+      background: linear-gradient(135deg, #ffffff 0%, #c7d9ff 50%, #7dd3fc 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-shadow: 0 10px 40px rgba(0, 0, 0, 0.45);
+      margin-bottom: 16px;
+    }
+
+    .hero-subtitle {
+      max-width: 560px;
+      font-size: 15px;
+      line-height: 1.7;
+      color: var(--text-secondary);
+      margin-bottom: 32px;
+    }
+
+    .hero-actions {
+      display: flex;
+      gap: 14px;
+      pointer-events: auto;
+    }
+
+    .btn-primary {
+      padding: 12px 26px;
+      border-radius: 999px;
+      border: none;
+      background: linear-gradient(135deg, #e0f2fe 0%, #ffffff 100%);
+      color: #050814;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: transform 0.25s ease, box-shadow 0.25s ease;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(125, 211, 252, 0.35);
+    }
+
+    .btn-ghost {
+      padding: 12px 24px;
+      border-radius: 999px;
+      border: 1px solid var(--glass-border);
+      background: rgba(12, 18, 38, 0.55);
+      color: var(--text-primary);
+      font-size: 14px;
+      backdrop-filter: blur(10px);
+      cursor: pointer;
+      transition: all 0.25s ease;
+    }
+
+    .btn-ghost:hover {
+      border-color: rgba(255, 255, 255, 0.4);
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    .cosmos-tip {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 12px;
+      letter-spacing: 0.14em;
+      color: rgba(154, 168, 199, 0.55);
+      pointer-events: none;
+    }
+
+    /* Inner Content Panels (Works, Pricing, Products, About) */
+    .panel-container {
+      width: 100%;
+      max-width: 1120px;
+      margin: auto;
+      pointer-events: auto;
+    }
+
+    .section-header {
+      text-align: center;
+      margin-bottom: 36px;
+    }
+
+    .section-header h2 {
+      font-size: 30px;
+      letter-spacing: 0.08em;
+      margin-bottom: 10px;
+    }
+
+    .section-header p {
+      color: var(--text-secondary);
+      font-size: 14px;
+    }
+
+    /* Filter Pills for Works */
+    .filter-bar {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 28px;
+    }
+
+    .filter-chip {
+      padding: 6px 16px;
+      border-radius: 999px;
+      font-size: 13px;
+      border: 1px solid var(--glass-border);
+      background: rgba(12, 18, 38, 0.55);
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: all 0.25s ease;
+    }
+
+    .filter-chip.active, .filter-chip:hover {
+      border-color: var(--accent-cyan);
+      color: #ffffff;
+      background: rgba(110, 231, 255, 0.14);
+    }
+
+    /* Grid Cards */
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 22px;
+    }
+
+    .glass-card {
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      border-radius: 20px;
+      padding: 24px;
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .glass-card:hover {
+      transform: translateY(-5px);
+      border-color: rgba(110, 231, 255, 0.42);
+      box-shadow: 0 16px 36px rgba(0, 0, 0, 0.45);
+    }
+
+    /* Work Card */
+    .work-card {
+      padding: 0;
+      overflow: hidden;
+      cursor: pointer;
+    }
+
+    .work-thumb {
+      width: 100%;
+      height: 190px;
+      object-fit: cover;
+      background: #0d152d;
+      border-bottom: 1px solid var(--glass-border);
+    }
+
+    .work-body {
+      padding: 20px 22px 24px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .work-meta {
+      display: flex;
+      justify-content: space-between;
+      font-size: 12px;
+      color: var(--accent-cyan);
+      margin-bottom: 8px;
+      letter-spacing: 0.06em;
+    }
+
+    .work-title {
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 10px;
+    }
+
+    .work-desc {
+      font-size: 13.5px;
+      line-height: 1.6;
+      color: var(--text-secondary);
+      flex: 1;
+    }
+
+    /* Pricing Card */
+    .price-card.featured {
+      border-color: rgba(110, 231, 255, 0.55);
+      background: linear-gradient(180deg, rgba(18, 29, 58, 0.78) 0%, rgba(11, 16, 33, 0.72) 100%);
+      box-shadow: 0 0 32px rgba(110, 231, 255, 0.12);
+    }
+
+    .price-badge {
+      align-self: flex-start;
+      font-size: 11px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: rgba(110, 231, 255, 0.14);
+      color: var(--accent-cyan);
+      margin-bottom: 14px;
+    }
+
+    .price-amount {
+      font-size: 32px;
+      font-weight: 700;
+      margin: 10px 0 8px;
+    }
+
+    .price-amount span {
+      font-size: 13px;
+      font-weight: 400;
+      color: var(--text-secondary);
+    }
+
+    .price-features {
+      list-style: none;
+      margin: 18px 0 24px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      font-size: 13.5px;
+      color: #d6e0f5;
+    }
+
+    .price-features li::before {
+      content: "✦ ";
+      color: var(--accent-cyan);
+    }
+
+    /* Product Card */
+    .product-tag {
+      font-size: 11px;
+      letter-spacing: 0.16em;
+      color: var(--accent-purple);
+      margin-bottom: 10px;
+    }
+
+    .product-price {
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--accent-cyan);
+      margin: 14px 0;
+    }
+
+    /* About Box */
+    .about-box {
+      max-width: 820px;
+      margin: 0 auto;
+      text-align: center;
+      padding: 40px;
+    }
+
+    .about-headline {
+      font-size: 26px;
+      line-height: 1.45;
+      margin-bottom: 18px;
+    }
+
+    .about-story {
+      font-size: 15px;
+      line-height: 1.85;
+      color: var(--text-secondary);
+      margin-bottom: 32px;
+    }
+
+    .metrics-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      padding-top: 26px;
+      border-top: 1px solid var(--glass-border);
+    }
+
+    .metric-val {
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--accent-cyan);
+    }
+
+    .metric-lbl {
+      font-size: 12.5px;
+      color: var(--text-secondary);
+      margin-top: 4px;
+    }
+
+    /* Modal for Work Details */
+    #work-modal {
+      position: fixed;
+      inset: 0;
+      z-index: 200;
+      background: rgba(2, 4, 12, 0.78);
+      backdrop-filter: blur(12px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.3s ease;
+    }
+
+    #work-modal.open {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .modal-card {
+      width: 100%;
+      max-width: 640px;
+      background: #0b1124;
+      border: 1px solid rgba(110, 231, 255, 0.3);
+      border-radius: 22px;
+      overflow: hidden;
+      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.65);
+    }
+
+    .modal-img {
+      width: 100%;
+      max-height: 320px;
+      object-fit: cover;
+      display: block;
+    }
+
+    .modal-body {
+      padding: 26px 30px;
+    }
+
+    .modal-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 12px;
+      margin-top: 22px;
+    }
+
+    @media (max-width: 768px) {
+      header.top-nav {
+        padding: 16px 18px;
+        flex-direction: column;
+        gap: 12px;
+      }
+      .page-section {
+        padding: 126px 18px 36px;
+        justify-content: flex-start;
+      }
+      .metrics-row {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 1. Pure White + Center Black Dot Intro -->
+  <div id="intro-screen">
+    <div class="singularity-wrapper" id="singularity-trigger" title="点击进入星域">
+      <div class="singularity-ring"></div>
+      <div class="singularity-dot"></div>
+    </div>
+    <div class="intro-hint">CLICK THE SINGULARITY</div>
+  </div>
+
+  <!-- 2. Interactive Starfield Canvas -->
+  <canvas id="cosmos-canvas"></canvas>
+
+  <!-- 3. Top Navigation -->
+  <header class="top-nav">
+    <div class="brand-logo" onclick="switchTab('home')">
+      <span class="brand-orb"></span>
+      <span id="brand-name">SINGULARITY // 奇点星域</span>
+    </div>
+    <nav class="nav-pills">
+      <button class="nav-btn active" data-tab="home" onclick="switchTab('home')">首页</button>
+      <button class="nav-btn" data-tab="works" onclick="switchTab('works')">作品</button>
+      <button class="nav-btn" data-tab="pricing" onclick="switchTab('pricing')">价钱</button>
+      <button class="nav-btn" data-tab="products" onclick="switchTab('products')">产品</button>
+      <button class="nav-btn" data-tab="about" onclick="switchTab('about')">关于我们</button>
+    </nav>
+  </header>
+
+  <!-- 4. Viewport Pages -->
+  <main id="viewport">
+    <!-- HOME -->
+    <section id="page-home" class="page-section active">
+      <div class="hero-badge">✦ INTERACTIVE DIGITAL COSMOS</div>
+      <h1 class="hero-title" id="hero-title">SINGULARITY // 奇点星域</h1>
+      <p class="hero-subtitle" id="hero-subtitle">探索数字宇宙与视觉边界的创意实验室</p>
+      <div class="hero-actions">
+        <button class="btn-primary" onclick="switchTab('works')">探索精选作品</button>
+        <button class="btn-ghost" onclick="switchTab('pricing')">查看服务方案</button>
+      </div>
+      <div class="cosmos-tip">移动鼠标编织星座连线 · 点击星空释放引力涟漪</div>
+    </section>
+
+    <!-- WORKS -->
+    <section id="page-works" class="page-section">
+      <div class="panel-container">
+        <div class="section-header">
+          <h2>精选作品</h2>
+          <p>点击任意作品卡片可查看完整项目细节</p>
+        </div>
+        <div class="filter-bar" id="works-filters"></div>
+        <div class="grid-3" id="works-grid"></div>
+      </div>
+    </section>
+
+    <!-- PRICING -->
+    <section id="page-pricing" class="page-section">
+      <div class="panel-container">
+        <div class="section-header">
+          <h2>透明报价与方案</h2>
+          <p>根据你的项目阶段选择合适的视觉与技术方案</p>
+        </div>
+        <div class="grid-3" id="pricing-grid"></div>
+      </div>
+    </section>
+
+    <!-- PRODUCTS -->
+    <section id="page-products" class="page-section">
+      <div class="panel-container">
+        <div class="section-header">
+          <h2>数字产品与组件</h2>
+          <p>可独立采购的创意代码组件与 1 对 1 咨询服务</p>
+        </div>
+        <div class="grid-3" id="products-grid"></div>
+      </div>
+    </section>
+
+    <!-- ABOUT -->
+    <section id="page-about" class="page-section">
+      <div class="panel-container">
+        <div class="glass-card about-box">
+          <div class="hero-badge">ABOUT US</div>
+          <h2 class="about-headline" id="about-headline"></h2>
+          <p class="about-story" id="about-story"></p>
+          <div class="metrics-row" id="about-metrics"></div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Work Detail Modal -->
+  <div id="work-modal" onclick="closeModal(event)">
+    <div class="modal-card" onclick="event.stopPropagation()">
+      <img id="modal-img" class="modal-img" src="" alt="" />
+      <div class="modal-body">
+        <div class="work-meta">
+          <span id="modal-cat"></span>
+          <span id="modal-year"></span>
+        </div>
+        <h3 id="modal-title" style="font-size: 22px; margin-bottom: 12px;"></h3>
+        <p id="modal-summary" style="color: var(--text-secondary); line-height: 1.7; font-size: 14.5px;"></p>
+        <div class="modal-actions">
+          <button class="btn-ghost" onclick="closeModal()">关闭</button>
+          <a id="modal-link" href="#" target="_blank" rel="noopener" class="btn-primary" style="text-decoration:none;">访问项目 ↗</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    /* ================= NETLIFY IDENTITY REDIRECT ================= */
+    if (window.netlifyIdentity) {
+      window.netlifyIdentity.on("init", user => {
+        if (!user) {
+          window.netlifyIdentity.on("login", () => {
+            document.location.href = "/admin/";
+          });
+        }
+      });
+    }
+
+    /* ================= INTRO SINGULARITY TRANSITION ================= */
+    const introScreen = document.getElementById("intro-screen");
+    const trigger = document.getElementById("singularity-trigger");
+
+    trigger.addEventListener("click", () => {
+      trigger.classList.add("expanding");
+      setTimeout(() => {
+        introScreen.classList.add("revealed");
+        document.body.classList.add("universe-active");
+        burstRipple(window.innerWidth / 2, window.innerHeight / 2, 16);
+      }, 420);
+    });
+
+    /* ================= NAVIGATION TABS ================= */
+    function switchTab(tabName) {
+      document.querySelectorAll(".nav-btn").forEach(btn => {
+        btn.classList.toggle("active", btn.dataset.tab === tabName);
+      });
+      document.querySelectorAll(".page-section").forEach(sec => {
+        sec.classList.toggle("active", sec.id === "page-" + tabName);
+      });
+    }
+
+    /* ================= LOAD CONTENT FROM data.json ================= */
+    let siteData = null;
+    let activeCategory = "全部";
+
+    async function loadSiteContent() {
+      try {
+        const res = await fetch("./data.json?t=" + Date.now());
+        siteData = await res.json();
+        renderAll();
+      } catch (err) {
+        console.error("Failed to load data.json:", err);
+      }
+    }
+
+    function renderAll() {
+      if (!siteData) return;
+
+      // Brand
+      document.getElementById("brand-name").textContent = siteData.brand.name;
+      document.getElementById("hero-title").textContent = siteData.brand.name;
+      document.getElementById("hero-subtitle").textContent = siteData.brand.subtitle;
+
+      // Works Categories & Grid
+      renderWorks();
+
+      // Pricing
+      const pricingGrid = document.getElementById("pricing-grid");
+      pricingGrid.innerHTML = siteData.pricing.map(plan => `
+        <div class="glass-card price-card ${plan.featured ? "featured" : ""}">
+          ${plan.badge ? `<span class="price-badge">${plan.badge}</span>` : ""}
+          <h3 style="font-size:19px;">${plan.name}</h3>
+          <div class="price-amount">${plan.price} <span>${plan.unit || ""}</span></div>
+          <p style="font-size:13px; color:var(--text-secondary);">${plan.description}</p>
+          <ul class="price-features">
+            ${(plan.features || []).map(f => `<li>${f}</li>`).join("")}
+          </ul>
+          <button class="${plan.featured ? "btn-primary" : "btn-ghost"}" style="width:100%;" onclick="contactForPlan('${plan.name}')">咨询此方案</button>
+        </div>
+      `).join("");
+
+      // Products
+      const productsGrid = document.getElementById("products-grid");
+      productsGrid.innerHTML = siteData.products.map(prod => `
+        <div class="glass-card">
+          <div class="product-tag">${prod.tag}</div>
+          <h3 style="font-size:19px;">${prod.title}</h3>
+          <div class="product-price">${prod.price}</div>
+          <p style="font-size:13.5px; line-height:1.65; color:var(--text-secondary); flex:1; margin-bottom:20px;">${prod.description}</p>
+          <button class="btn-ghost" onclick="contactForPlan('${prod.title}')">获取详情</button>
+        </div>
+      `).join("");
+
+      // About
+      document.getElementById("about-headline").textContent = siteData.about.headline;
+      document.getElementById("about-story").textContent = siteData.about.story;
+      document.getElementById("about-metrics").innerHTML = (siteData.about.metrics || []).map(m => `
+        <div>
+          <div class="metric-val">${m.value}</div>
+          <div class="metric-lbl">${m.label}</div>
+        </div>
+      `).join("");
+    }
+
+    function renderWorks() {
+      const works = siteData.works || [];
+      const categories = ["全部", ...new Set(works.map(w => w.category).filter(Boolean))];
+
+      const filterBar = document.getElementById("works-filters");
+      filterBar.innerHTML = categories.map(cat => `
+        <button class="filter-chip ${cat === activeCategory ? "active" : ""}" onclick="setCategory('${cat}')">${cat}</button>
+      `).join("");
+
+      const filtered = activeCategory === "全部" ? works : works.filter(w => w.category === activeCategory);
+      const grid = document.getElementById("works-grid");
+      grid.innerHTML = filtered.map((w, idx) => `
+        <div class="glass-card work-card" onclick="openWorkModal('${w.id}')">
+          <img class="work-thumb" src="${w.image}" alt="${w.title}" loading="lazy" />
+          <div class="work-body">
+            <div class="work-meta">
+              <span>${w.category}</span>
+              <span>${w.year}</span>
+            </div>
+            <div class="work-title">${w.title}</div>
+            <div class="work-desc">${w.summary}</div>
+          </div>
+        </div>
+      `).join("");
+    }
+
+    function setCategory(cat) {
+      activeCategory = cat;
+      renderWorks();
+    }
+
+    function openWorkModal(id) {
+      const work = (siteData.works || []).find(w => w.id === id);
+      if (!work) return;
+      document.getElementById("modal-img").src = work.image;
+      document.getElementById("modal-cat").textContent = work.category;
+      document.getElementById("modal-year").textContent = work.year;
+      document.getElementById("modal-title").textContent = work.title;
+      document.getElementById("modal-summary").textContent = work.summary;
+      const linkBtn = document.getElementById("modal-link");
+      if (work.link) {
+        linkBtn.href = work.link;
+        linkBtn.style.display = "inline-block";
+      } else {
+        linkBtn.style.display = "none";
+      }
+      document.getElementById("work-modal").classList.add("open");
+    }
+
+    function closeModal() {
+      document.getElementById("work-modal").classList.remove("open");
+    }
+
+    function contactForPlan(itemName) {
+      const email = siteData?.brand?.contact_email || "hello@example.com";
+      window.location.href = `mailto:${email}?subject=${encodeURIComponent("咨询项目：" + itemName)}`;
+    }
+
+    loadSiteContent();
+
+    /* ================= INTERACTIVE COSMOS ENGINE ================= */
+    const canvas = document.getElementById("cosmos-canvas");
+    const ctx = canvas.getContext("2d");
+    let width = canvas.width = window.innerWidth;
+    let height = canvas.height = window.innerHeight;
+
+    const mouse = { x: -9999, y: -9999, targetX: 0, targetY: 0, parallaxX: 0, parallaxY: 0 };
+
+    window.addEventListener("resize", () => {
+      width = canvas.width = window.innerWidth;
+      height = canvas.height = window.innerHeight;
+      initStars();
+    });
+
+    window.addEventListener("mousemove", e => {
+      mouse.x = e.clientX;
+      mouse.y = e.clientY;
+      mouse.targetX = (e.clientX - width / 2) * 0.04;
+      mouse.targetY = (e.clientY - height / 2) * 0.04;
+    });
+
+    window.addEventListener("mouseleave", () => {
+      mouse.x = -9999;
+      mouse.y = -9999;
+    });
+
+    window.addEventListener("click", e => {
+      if (!document.body.classList.contains("universe-active")) return;
+      if (e.target.closest("button, a, .glass-card, .modal-card, nav")) return;
+      burstRipple(e.clientX, e.clientY, 10);
+    });
+
+    let stars = [];
+    let shootingStars = [];
+    let ripples = [];
+    let sparks = [];
+
+    function initStars() {
+      const count = Math.min(240, Math.floor((width * height) / 6200));
+      stars = [];
+      const colors = ["#ffffff", "#dbeafe", "#bae6fd", "#e9d5ff", "#fef08a"];
+      for (let i = 0; i < count; i++) {
+        const layer = Math.random() < 0.55 ? 1 : (Math.random() < 0.75 ? 2 : 3);
+        stars.push({
+          x: Math.random() * width,
+          y: Math.random() * height,
+          vx: (Math.random() - 0.5) * 0.12 * layer,
+          vy: (Math.random() - 0.5) * 0.12 * layer,
+          r: (Math.random() * 1.4 + 0.4) * (layer * 0.55),
+          layer,
+          alpha: Math.random() * 0.65 + 0.25,
+          twinkleSpeed: Math.random() * 0.025 + 0.008,
+          phase: Math.random() * Math.PI * 2,
+          color: colors[Math.floor(Math.random() * colors.length)]
+        });
+      }
+    }
+
+    function burstRipple(x, y, sparkCount = 10) {
+      ripples.push({ x, y, r: 4, maxR: 150, alpha: 0.75 });
+      for (let i = 0; i < sparkCount; i++) {
+        const angle = (Math.PI * 2 * i) / sparkCount + Math.random() * 0.4;
+        const speed = Math.random() * 2.6 + 1.2;
+        sparks.push({
+          x, y,
+          vx: Math.cos(angle) * speed,
+          vy: Math.sin(angle) * speed,
+          life: 1,
+          decay: Math.random() * 0.022 + 0.015
+        });
+      }
+    }
+
+    function spawnShootingStar() {
+      if (Math.random() < 0.008 && shootingStars.length < 2) {
+        shootingStars.push({
+          x: Math.random() * width * 0.85,
+          y: Math.random() * height * 0.35,
+          vx: Math.random() * 7 + 6,
+          vy: Math.random() * 3.5 + 2.5,
+          len: Math.random() * 90 + 60,
+          life: 1
+        });
+      }
+    }
+
+    function animate() {
+      ctx.clearRect(0, 0, width, height);
+
+      // Subtle Nebula Glows
+      const g1 = ctx.createRadialGradient(width * 0.25, height * 0.3, 10, width * 0.25, height * 0.3, width * 0.42);
+      g1.addColorStop(0, "rgba(56, 189, 248, 0.08)");
+      g1.addColorStop(1, "rgba(0, 0, 0, 0)");
+      ctx.fillStyle = g1;
+      ctx.fillRect(0, 0, width, height);
+
+      const g2 = ctx.createRadialGradient(width * 0.78, height * 0.7, 10, width * 0.78, height * 0.7, width * 0.45);
+      g2.addColorStop(0, "rgba(139, 92, 246, 0.09)");
+      g2.addColorStop(1, "rgba(0, 0, 0, 0)");
+      ctx.fillStyle = g2;
+      ctx.fillRect(0, 0, width, height);
+
+      // Smooth parallax
+      mouse.parallaxX += (mouse.targetX - mouse.parallaxX) * 0.06;
+      mouse.parallaxY += (mouse.targetY - mouse.parallaxY) * 0.06;
+
+      // Update & Draw Stars + Mouse Constellation Lines
+      for (let i = 0; i < stars.length; i++) {
+        const s = stars[i];
+        s.x += s.vx;
+        s.y += s.vy;
+        if (s.x < 0) s.x = width;
+        if (s.x > width) s.x = 0;
+        if (s.y < 0) s.y = height;
+        if (s.y > height) s.y = 0;
+
+        s.phase += s.twinkleSpeed;
+        const currentAlpha = Math.max(0.1, Math.min(1, s.alpha + Math.sin(s.phase) * 0.25));
+
+        const drawX = s.x + mouse.parallaxX * s.layer;
+        const drawY = s.y + mouse.parallaxY * s.layer;
+
+        // Constellation line to mouse
+        const dx = drawX - mouse.x;
+        const dy = drawY - mouse.y;
+        const dist = Math.hypot(dx, dy);
+        if (dist < 155) {
+          ctx.beginPath();
+          ctx.moveTo(drawX, drawY);
+          ctx.lineTo(mouse.x, mouse.y);
+          ctx.strokeStyle = `rgba(110, 231, 255, ${(1 - dist / 155) * 0.35})`;
+          ctx.lineWidth = 0.8;
+          ctx.stroke();
+        }
+
+        ctx.beginPath();
+        ctx.arc(drawX, drawY, s.r, 0, Math.PI * 2);
+        ctx.fillStyle = s.color;
+        ctx.globalAlpha = currentAlpha;
+        ctx.fill();
+        ctx.globalAlpha = 1;
+      }
+
+      // Shooting Stars
+      spawnShootingStar();
+      for (let i = shootingStars.length - 1; i >= 0; i--) {
+        const st = shootingStars[i];
+        st.x += st.vx;
+        st.y += st.vy;
+        st.life -= 0.018;
+        if (st.life <= 0) {
+          shootingStars.splice(i, 1);
+          continue;
+        }
+        const grad = ctx.createLinearGradient(st.x, st.y, st.x - st.vx * 8, st.y - st.vy * 8);
+        grad.addColorStop(0, `rgba(255, 255, 255, ${st.life})`);
+        grad.addColorStop(1, "rgba(110, 231, 255, 0)");
+        ctx.beginPath();
+        ctx.moveTo(st.x, st.y);
+        ctx.lineTo(st.x - st.vx * 8, st.y - st.vy * 8);
+        ctx.strokeStyle = grad;
+        ctx.lineWidth = 1.6;
+        ctx.stroke();
+      }
+
+      // Gravity Ripples
+      for (let i = ripples.length - 1; i >= 0; i--) {
+        const rp = ripples[i];
+        rp.r += 3.2;
+        rp.alpha -= 0.016;
+        if (rp.alpha <= 0) {
+          ripples.splice(i, 1);
+          continue;
+        }
+        ctx.beginPath();
+        ctx.arc(rp.x, rp.y, rp.r, 0, Math.PI * 2);
+        ctx.strokeStyle = `rgba(110, 231, 255, ${rp.alpha})`;
+        ctx.lineWidth = 1.2;
+        ctx.stroke();
+      }
+
+      // Stardust Sparks
+      for (let i = sparks.length - 1; i >= 0; i--) {
+        const sp = sparks[i];
+        sp.x += sp.vx;
+        sp.y += sp.vy;
+        sp.vx *= 0.96;
+        sp.vy *= 0.96;
+        sp.life -= sp.decay;
+        if (sp.life <= 0) {
+          sparks.splice(i, 1);
+          continue;
+        }
+        ctx.beginPath();
+        ctx.arc(sp.x, sp.y, 1.5, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(167, 139, 250, ${sp.life})`;
+        ctx.fill();
+      }
+
+      requestAnimationFrame(animate);
+    }
+
+    initStars();
+    animate();
+  </script>
+</body>
+</html>

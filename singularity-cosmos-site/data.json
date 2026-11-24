@@ -1,0 +1,121 @@
+{
+  "brand": {
+    "name": "SINGULARITY // 奇点星域",
+    "subtitle": "探索数字宇宙与视觉边界的创意实验室",
+    "contact_email": "hello@singularity-cosmos.example.com"
+  },
+  "works": [
+    {
+      "id": "w1",
+      "title": "星云声景 · 交互艺术装置",
+      "category": "互动视觉",
+      "year": "2026",
+      "image": "https://images.unsplash.com/photo-1462331940025-496dfbfc7564?auto=format&fit=crop&w=900&q=80",
+      "summary": "结合实时音频频谱与流体粒子渲染的沉浸式数字艺术空间，观众的每一次呼吸与动作都会重塑星云形态。",
+      "link": "https://example.com/work-1"
+    },
+    {
+      "id": "w2",
+      "title": "深空观测站 · 品牌官网重塑",
+      "category": "品牌网站",
+      "year": "2026",
+      "image": "https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=900&q=80",
+      "summary": "为前沿航天科技机构打造的 WebGL 三维轨道数据可视化官网，实现零延迟星图检索与科普交互。",
+      "link": "https://example.com/work-2"
+    },
+    {
+      "id": "w3",
+      "title": "引力波序列 · 生成式视觉系统",
+      "category": "动态设计",
+      "year": "2025",
+      "image": "https://images.unsplash.com/photo-1534447677768-be436bb09401?auto=format&fit=crop&w=900&q=80",
+      "summary": "基于物理引力算法的动态海报与数字藏品生成引擎，支持参数化导出超高清动态影像。",
+      "link": "https://example.com/work-3"
+    }
+  ],
+  "pricing": [
+    {
+      "name": "启航版 · 极简展示",
+      "price": "¥ 3,800",
+      "unit": "/ 套",
+      "badge": "适合个人品牌",
+      "featured": false,
+      "description": "快速建立具有视觉冲击力的线上名片与作品集网站。",
+      "features": [
+        "定制开场动画与互动视觉背景",
+        "最多 5 个核心功能分页设计",
+        "内置可视化后台管理（随时改图改字）",
+        "全端自适应（电脑 / 手机 / 平板）",
+        "免费静态托管部署与基础 SEO 配置"
+      ]
+    },
+    {
+      "name": "星系版 · 创意品牌定制",
+      "price": "¥ 8,800",
+      "unit": "/ 套",
+      "badge": "最受欢迎",
+      "featured": true,
+      "description": "为独立工作室、设计师与新锐品牌打造的高辨识度互动官网。",
+      "features": [
+        "专属定制 WebGL / Canvas 粒子与交互特效",
+        "完整作品集弹窗展示 + 多维分类筛选",
+        "可视化 CMS 后台 + 自定义域名绑定",
+        "流畅微交互动效与页面转场设计",
+        "上线后 3 个月免费技术护航与维护"
+      ]
+    },
+    {
+      "name": "宇宙版 · 旗舰数字体验",
+      "price": "¥ 18,000+",
+      "unit": "/ 项目",
+      "badge": "深度定制",
+      "featured": false,
+      "description": "融合 3D 场景、专属交互叙事与多语言扩展的旗舰级品牌站点。",
+      "features": [
+        "三维空间模型交互与沉浸式叙事动线",
+        "多语言切换（中 / 英 / 日等）架构",
+        "高级数据看板、预约表单与第三方 API 集成",
+        "专属性能优化与全球 CDN 加速",
+        "1 对 1 长期技术顾问支持"
+      ]
+    }
+  ],
+  "products": [
+    {
+      "tag": "DIGITAL ASSET // 01",
+      "title": "Cosmos Canvas 星空粒子引擎",
+      "price": "¥ 299",
+      "description": "轻量级零依赖原生 JS 星空互动组件，支持鼠标星座连线、视差分层与引力波涟漪，可直接嵌入任何网页。"
+    },
+    {
+      "tag": "TEMPLATE // 02",
+      "title": "Singularity 极简奇点作品集模板",
+      "price": "¥ 499",
+      "description": "开箱即用的个人作品集与报价展示模板，自带可视化后台配置，无需服务器即可免费部署上线。"
+    },
+    {
+      "tag": "CONSULTING // 03",
+      "title": "1 对 1 网站上线与视觉诊断",
+      "price": "¥ 399 / 小时",
+      "description": "协助解决域名解析、Netlify 部署、CMS 后台配置及网页动效性能调优问题。"
+    }
+  ],
+  "about": {
+    "headline": "从纯白的奇点出发，构建有温度的数字星河。",
+    "story": "我们是一支专注于创意网页设计与交互视觉的数字工作室。我们相信，一个好的网站不应该只是冰冷的信息罗列，而应该像一次星际旅行——从最初纯粹的留白与好奇开始，在每一次鼠标移动与点击中，发现隐藏在细节里的宇宙。",
+    "metrics": [
+      {
+        "value": "40+",
+        "label": "已上线创意项目"
+      },
+      {
+        "value": "99.9%",
+        "label": "全球访问稳定性"
+      },
+      {
+        "value": "100%",
+        "label": "支持零代码后台更新"
+      }
+    ]
+  }
+}

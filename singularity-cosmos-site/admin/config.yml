@@ -1,0 +1,81 @@
+backend:
+  name: git-gateway
+  branch: main
+
+local_backend: true
+
+media_folder: "images/uploads"
+public_folder: "/images/uploads"
+
+locale: "zh-Hans"
+
+collections:
+  - name: "site_content"
+    label: "网站全部内容管理"
+    delete: false
+    editor:
+      preview: false
+    files:
+      - name: "main_data"
+        label: "作品 / 价钱 / 产品 / 关于我们"
+        file: "data.json"
+        fields:
+          - label: "品牌基础信息"
+            name: "brand"
+            widget: "object"
+            fields:
+              - { label: "网站标题 / Logo", name: "name", widget: "string" }
+              - { label: "首页副标题", name: "subtitle", widget: "string" }
+              - { label: "联系邮箱", name: "contact_email", widget: "string" }
+
+          - label: "作品列表（点击可新增、排序、修改或删除）"
+            name: "works"
+            widget: "list"
+            summary: "{{fields.title}} ({{fields.category}} - {{fields.year}})"
+            fields:
+              - { label: "作品编号 (唯一英文/数字)", name: "id", widget: "string", default: "work-new" }
+              - { label: "作品标题", name: "title", widget: "string" }
+              - { label: "作品分类", name: "category", widget: "string", default: "互动视觉" }
+              - { label: "年份", name: "year", widget: "string", default: "2026" }
+              - { label: "作品封面图 (可直接上传)", name: "image", widget: "image" }
+              - { label: "作品简介", name: "summary", widget: "text" }
+              - { label: "作品详情外部链接 (选填)", name: "link", widget: "string", required: false }
+
+          - label: "价钱方案"
+            name: "pricing"
+            widget: "list"
+            summary: "{{fields.name}} - {{fields.price}}"
+            fields:
+              - { label: "套餐名称", name: "name", widget: "string" }
+              - { label: "价格显示", name: "price", widget: "string" }
+              - { label: "计价单位", name: "unit", widget: "string", default: "/ 套" }
+              - { label: "角标标签", name: "badge", widget: "string", required: false }
+              - { label: "是否主推高亮", name: "featured", widget: "boolean", default: false }
+              - { label: "套餐简述", name: "description", widget: "text" }
+              - label: "包含服务条目"
+                name: "features"
+                widget: "list"
+                field: { label: "条目内容", name: "item", widget: "string" }
+
+          - label: "产品列表"
+            name: "products"
+            widget: "list"
+            summary: "{{fields.title}} ({{fields.price}})"
+            fields:
+              - { label: "顶部标签", name: "tag", widget: "string", default: "PRODUCT" }
+              - { label: "产品名称", name: "title", widget: "string" }
+              - { label: "产品价格", name: "price", widget: "string" }
+              - { label: "产品介绍", name: "description", widget: "text" }
+
+          - label: "关于我们"
+            name: "about"
+            widget: "object"
+            fields:
+              - { label: "核心标语", name: "headline", widget: "string" }
+              - { label: "团队故事介绍", name: "story", widget: "text" }
+              - label: "关键数据指标"
+                name: "metrics"
+                widget: "list"
+                fields:
+                  - { label: "数值 (如 40+)", name: "value", widget: "string" }
+                  - { label: "说明文字", name: "label", widget: "string" }
