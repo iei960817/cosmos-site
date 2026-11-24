@@ -78,6 +78,17 @@
         "专属性能优化与全球 CDN 加速",
         "1 对 1 长期技术顾问支持"
       ]
+    },
+    {
+      "unit": "1",
+      "featured": true,
+      "name": "Signature A",
+      "price": "3588",
+      "description": "photobooth\nReception\nMemory lane",
+      "features": [
+        "3D 设计图",
+        "现场setup"
+      ]
     }
   ],
   "products": [
